@@ -76,9 +76,12 @@ window.addEventListener("load", function () {
             } else {
                 target = ((parseInt(this.rotation) + 1) % 4).toString() as Rotation
             }
-            if (this._canBeAt(target, this.x, this.y)) {
-                this.rotation = target
-                return true
+            for (let delta of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]]) {
+                let [dx, dy] = delta
+                if (this._canBeAt(target, this.x + dx, this.y + dy)) {
+                    this.rotation = target
+                    return true
+                }
             }
             return false
         }
