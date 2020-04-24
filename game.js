@@ -66,6 +66,8 @@ window.addEventListener("load", function () {
                 var dx = delta[0], dy = delta[1];
                 if (this._canBeAt(target, this.x + dx, this.y + dy)) {
                     this.rotation = target;
+                    this.x = this.x + dx;
+                    this.y = this.y + dy;
                     return true;
                 }
             }

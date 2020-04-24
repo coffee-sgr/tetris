@@ -80,6 +80,8 @@ window.addEventListener("load", function () {
                 let [dx, dy] = delta
                 if (this._canBeAt(target, this.x + dx, this.y + dy)) {
                     this.rotation = target
+                    this.x = this.x + dx
+                    this.y = this.y + dy
                     return true
                 }
             }
