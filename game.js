@@ -61,9 +61,13 @@ window.addEventListener("load", function () {
             else {
                 target = ((parseInt(this.rotation) + 1) % 4).toString();
             }
-            if (this._canBeAt(target, this.x, this.y)) {
-                this.rotation = target;
-                return true;
+            for (var _i = 0, _a = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]]; _i < _a.length; _i++) {
+                var delta = _a[_i];
+                var dx = delta[0], dy = delta[1];
+                if (this._canBeAt(target, this.x + dx, this.y + dy)) {
+                    this.rotation = target;
+                    return true;
+                }
             }
             return false;
         };
