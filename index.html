@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="blockShapes.js"></script>
+    <script type="text/javascript" src="game.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-window-container">
+        <div id="left-panel">
+            <div id="hold">
+                <p>HOLD</p>
+                <img src="assets/black.png" alt="" id="hold-img">
+            </div>
+        </div>
+        <canvas id="game-window" width="300" height="600">Your browser does not support HTML5 canvas.</canvas>
+        <div id="right-panel">
+            <div id="next-blocks">
+                <img src="assets/black.png" alt="" id="next1">
+                <img src="assets/black.png" alt="" id="next2">
+            </div>
+            <div id="scoreboard">
+                <p>Your Current Score</p>
+                <p id="score-text">0</p>
+            </div>
+        </div>
+        <br>
+    </div>
+    <p class="game-guide">Left/Right arrow = Move block, z/x = Rotate, Lshift = Hold, space = Drop</p>
+    <p class="game-guide">Enjoy!</p>
+
+    <!-- images used in game -->
+    <div class="assets" hidden="hidden">
+        <img id="i-block" src="assets/I.png" alt="">
+        <img id="j-block" src="assets/J.png" alt="">
+        <img id="l-block" src="assets/L.png" alt="">
+        <img id="o-block" src="assets/O.png" alt="">
+        <img id="s-block" src="assets/S.png" alt="">
+        <img id="t-block" src="assets/T.png" alt="">
+        <img id="z-block" src="assets/Z.png" alt="">
+        <img id="i-shape" src="assets/i-shape.png" alt="">
+        <img id="j-shape" src="assets/j-shape.png" alt="">
+        <img id="l-shape" src="assets/l-shape.png" alt="">
+        <img id="o-shape" src="assets/o-shape.png" alt="">
+        <img id="s-shape" src="assets/s-shape.png" alt="">
+        <img id="t-shape" src="assets/t-shape.png" alt="">
+        <img id="z-shape" src="assets/z-shape.png" alt="">
+        <img id="placeholder" src="assets/black.png" alt="">
+    </div>
+</body>

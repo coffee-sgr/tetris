@@ -1,0 +1,68 @@
+html {
+    font-family: monospace;
+    font-size: 12pt;
+}
+
+.game-guide {
+    text-align: center;
+    line-height: 2pt;
+}
+
+#game-window-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    overflow: visible;
+}
+
+#left-panel {
+    text-align: center;
+    padding: 0 20px;
+    width: 75pt;
+}
+
+#hold {
+    position: absolute;
+    top: 10%;
+}
+
+#hold-img {
+    width: 75pt;
+}
+
+#right-panel {
+    padding: 0 20px;
+    width: 75pt;
+}
+
+#game-window {
+    border: 10px solid gray;
+}
+
+#next-blocks {
+    position: absolute;
+    top: 10%;
+}
+
+#next1 {
+    width: 75pt;
+}
+
+#next2 {
+    width: 50pt;
+}
+
+#scoreboard {
+    position: absolute;
+    width: min-content;
+    bottom: 30%;
+}
+
+@media all and (orientation: portrait) {
+    #game-window {
+        width: 400pt;
+    }
+}
