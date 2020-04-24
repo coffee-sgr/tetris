@@ -168,7 +168,7 @@ window.addEventListener("load", function () {
         gridSize: [20, 10],
         // Time interval between block drop in frames
         dropSpeed: 30,
-        // How long can a block stay active after touching the bottom in frames
+        // How long a block can stay active after touching the bottom in frames
         hardDropLife: 30,
     }
 
