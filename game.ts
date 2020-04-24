@@ -76,7 +76,7 @@ window.addEventListener("load", function () {
             } else {
                 target = ((parseInt(this.rotation) + 1) % 4).toString() as Rotation
             }
-            for (let delta of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            for (let delta of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]]) {
                 let [dx, dy] = delta
                 if (this._canBeAt(target, this.x + dx, this.y + dy)) {
                     this.rotation = target
