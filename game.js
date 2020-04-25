@@ -227,6 +227,7 @@ window.addEventListener("load", function () {
         }
     }
     var totalScore = 0;
+    var totalLines = 0;
     var promptTimer = 0;
     var renCount = 0;
     /**
@@ -255,7 +256,7 @@ window.addEventListener("load", function () {
             }
         }
         // Clear board
-        var clearedRows = 0;
+        var clearedLines = 0;
         for (var x = 0; x < rowNum; x++) {
             var full = true;
             for (var y = 0; y < colNum; y++) {
@@ -271,10 +272,10 @@ window.addEventListener("load", function () {
                 }
                 board.splice(x, 1);
                 board.unshift(emptyRow);
-                clearedRows++;
+                clearedLines++;
             }
         }
-        if (clearedRows > 0) {
+        if (clearedLines > 0) {
             var promptText = "";
             // Normal Clear
             var score = {
@@ -282,22 +283,22 @@ window.addEventListener("load", function () {
                 2: 200,
                 3: 500,
                 4: 1000,
-            }[clearedRows];
+            }[clearedLines];
             renCount++;
             if (renCount > 1) {
                 promptText = "Ren " + renCount + "!";
                 score += renCount * 100;
             }
-            if (clearedRows === 4) {
+            if (clearedLines === 4) {
                 promptText = "Tetris!";
             }
             // T-spin
             if (isTSpin) {
-                if (clearedRows === 2) {
+                if (clearedLines === 2) {
                     promptText = "T-spin Double!";
                     score = 1000;
                 }
-                else if (clearedRows === 3) {
+                else if (clearedLines === 3) {
                     promptText = "T-spin Triple!";
                     score = 1500;
                 }
@@ -306,7 +307,9 @@ window.addEventListener("load", function () {
                 }
             }
             totalScore += score;
+            totalLines += clearedLines;
             scoreTextElem.textContent = totalScore.toString();
+            lineCounterElem.textContent = totalLines.toString();
             if (promptText.length > 0) {
                 promptTextElem.textContent = promptText;
                 promptTimer = frames;
@@ -315,7 +318,7 @@ window.addEventListener("load", function () {
         else {
             renCount = 0;
         }
-        return clearedRows;
+        return clearedLines;
     }
     var gamePaused = false;
     function toggleGamePaused() {
@@ -403,6 +406,7 @@ window.addEventListener("load", function () {
     var activeBlock = new ActiveBlock(getNextBlock(), board);
     var promptTextElem = document.getElementById("prompt-text");
     var scoreTextElem = document.getElementById("score-text");
+    var lineCounterElem = document.getElementById("line-counter");
     // main
     setInterval(function () {
         if (gamePaused) {

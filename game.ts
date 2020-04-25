@@ -243,6 +243,7 @@ window.addEventListener("load", function () {
         }
     }
     let totalScore = 0
+    let totalLines = 0
     let promptTimer = 0
     let renCount = 0
 
@@ -271,7 +272,7 @@ window.addEventListener("load", function () {
             }
         }
         // Clear board
-        let clearedRows = 0
+        let clearedLines = 0
         for (let x = 0; x < rowNum; x++) {
             let full = true
             for (let y = 0; y < colNum; y++) {
@@ -287,10 +288,10 @@ window.addEventListener("load", function () {
                 }
                 board.splice(x, 1)
                 board.unshift(emptyRow)
-                clearedRows++
+                clearedLines++
             }
         }
-        if (clearedRows > 0) {
+        if (clearedLines > 0) {
             let promptText = ""
             // Normal Clear
             let score: number = ({
@@ -298,29 +299,31 @@ window.addEventListener("load", function () {
                 2: 200,
                 3: 500,
                 4: 1000,
-            } as any)[clearedRows]
+            } as any)[clearedLines]
             renCount++
             if (renCount > 1) {
                 promptText = `Ren ${renCount}!`
                 score += renCount * 100
             }
-            if (clearedRows === 4) {
+            if (clearedLines === 4) {
                 promptText = "Tetris!"
             }
             // T-spin
             if (isTSpin) {
-                if (clearedRows === 2) {
+                if (clearedLines === 2) {
                     promptText = "T-spin Double!"
                     score = 1000
-                } else if (clearedRows === 3) {
+                } else if (clearedLines === 3) {
                     promptText = "T-spin Triple!"
                     score = 1500
                 } else {
                     promptText = "T-spin!"
                 }
             }
-            totalScore += score;
+            totalScore += score
+            totalLines += clearedLines
             scoreTextElem.textContent = totalScore.toString()
+            lineCounterElem.textContent = totalLines.toString()
             if (promptText.length > 0) {
                 promptTextElem.textContent = promptText
                 promptTimer = frames
@@ -328,7 +331,7 @@ window.addEventListener("load", function () {
         } else {
             renCount = 0
         }
-        return clearedRows
+        return clearedLines
     }
 
     let gamePaused = false
@@ -420,6 +423,7 @@ window.addEventListener("load", function () {
     let activeBlock = new ActiveBlock(getNextBlock(), board)
     let promptTextElem = document.getElementById("prompt-text") as HTMLElement
     let scoreTextElem = document.getElementById("score-text") as HTMLElement
+    let lineCounterElem = document.getElementById("line-counter") as HTMLElement
     // main
     setInterval(() => {
         if (gamePaused) { return }
