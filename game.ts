@@ -142,6 +142,8 @@ window.addEventListener("load", function () {
          */
         hardDrop(board: GameBoard) {
             let [x, y] = this.shadowPosition()
+            this.x = x
+            this.y = y
             let shape = blockShapes[this.name][this.rotation]
             for (let dx = 0; dx < shape.length; dx++) {
                 for (let dy = 0; dy < shape[dx].length; dy++) {
@@ -170,6 +172,8 @@ window.addEventListener("load", function () {
         dropSpeed: 30,
         // How long a block can stay active after touching the bottom in frames
         hardDropLife: 30,
+        // How long the prompt text (e.g. tetris) can stay active
+        promptTextLife: 45,
     }
 
     const canvas = document.getElementById("game-window") as HTMLCanvasElement
@@ -232,9 +236,36 @@ window.addEventListener("load", function () {
             }
         }
     }
-    let score = 0
-    function clearBoard(board: GameBoard): number {
-        let cnt = 0
+    let totalScore = 0
+    let promptTimer = 0
+    let renCount = 0
+
+    /**
+     * Checks on all special clears. Invalidates the block argument.
+     * @param block Active block
+     * @param board Game board
+     */
+    function dropAndClear(block: ActiveBlock, board: GameBoard): number {
+        block.hardDrop(board)
+        usedHold = false
+
+        let isTSpin = false
+        // T-spin check
+        if (block.name === "t") {
+            if (block.rotation === "2") {
+                // T2
+                // assumes valid position because of _CanBeAt
+                isTSpin = (board[block.x + 1][block.y] !== null ||
+                    board[block.x + 1][block.y + 2] !== null)
+            } else if (block.rotation === "1") {
+                // T3
+                isTSpin = (board[block.x + 1][block.y + 2] !== null)
+            } else if (block.rotation === "3") {
+                isTSpin = (board[block.x + 1][block.y] !== null)
+            }
+        }
+        // Clear board
+        let clearedRows = 0
         for (let x = 0; x < rowNum; x++) {
             let full = true
             for (let y = 0; y < colNum; y++) {
@@ -250,25 +281,50 @@ window.addEventListener("load", function () {
                 }
                 board.splice(x, 1)
                 board.unshift(emptyRow)
-                cnt++
+                clearedRows++
             }
         }
-        if (cnt > 0) {
-            score += ({
+        if (clearedRows > 0) {
+            let promptText = ""
+            // Normal Clear
+            let score: number = ({
                 1: 100,
                 2: 200,
                 3: 500,
                 4: 1000,
-            } as any)[cnt];
-            (document.getElementById("score-text") as HTMLElement).textContent = score.toString()
+            } as any)[clearedRows]
+            renCount++
+            if (renCount > 1) {
+                promptText = `Ren ${renCount}!`
+            }
+            if (clearedRows === 4) {
+                promptText = "Tetris!"
+            }
+            // T-spin
+            if (isTSpin) {
+                if (clearedRows === 2) {
+                    promptText = "T-spin Double!"
+                } else if (clearedRows === 3) {
+                    promptText = "T-spin Triple!"
+                } else {
+                    promptText = "T-spin!"
+                }
+            }
+            totalScore += score;
+            scoreTextElem.textContent = totalScore.toString()
+            if (promptText.length > 0) {
+                promptTextElem.textContent = promptText
+                promptTimer = frames
+            }
+        } else {
+            renCount = 0
         }
-        return cnt
+        return clearedRows
     }
 
     let gamePaused = false
     function toggleGamePaused() {
         gamePaused = !gamePaused
-        console.log(`paused: ${gamePaused}`)
     }
     let events = new Queue<GameEvent>()
     document.addEventListener("keydown", (event: KeyboardEvent) => {
@@ -344,6 +400,8 @@ window.addEventListener("load", function () {
     let holdBlock: BlockName | null = null
     let usedHold = false
     let activeBlock = new ActiveBlock(getNextBlock(), board)
+    let promptTextElem = document.getElementById("prompt-text") as HTMLElement
+    let scoreTextElem = document.getElementById("score-text") as HTMLElement
     // main
     setInterval(() => {
         if (gamePaused) { return }
@@ -382,9 +440,8 @@ window.addEventListener("load", function () {
                     activeBlock.rotate("right")
                     break
                 case GameEvent.hardDrop:
-                    activeBlock.hardDrop(board)
+                    dropAndClear(activeBlock, board)
                     activeBlock = new ActiveBlock(getNextBlock(), board)
-                    usedHold = false
                     break
                 default:
                     break
@@ -400,8 +457,7 @@ window.addEventListener("load", function () {
             // at bottom
             if (hardDropTimer && frames - hardDropTimer >= gameSettings.hardDropLife) {
                 // should hard drop
-                activeBlock.hardDrop(board)
-                usedHold = false
+                dropAndClear(activeBlock, board)
                 activeBlock = new ActiveBlock(getNextBlock(), board)
                 hardDropTimer = null
             } else if (hardDropTimer === null) {
@@ -411,8 +467,9 @@ window.addEventListener("load", function () {
             // never hard drop unless the block is at the bottom
             hardDropTimer = null
         }
-
-        clearBoard(board)
+        if (frames - promptTimer >= gameSettings.promptTextLife) {
+            promptTextElem.textContent = ""
+        }
         drawBoard(board)
 
         // don't let shadow block itself

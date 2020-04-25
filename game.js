@@ -127,6 +127,8 @@ window.addEventListener("load", function () {
          */
         ActiveBlock.prototype.hardDrop = function (board) {
             var _a = this.shadowPosition(), x = _a[0], y = _a[1];
+            this.x = x;
+            this.y = y;
             var shape = blockShapes[this.name][this.rotation];
             for (var dx = 0; dx < shape.length; dx++) {
                 for (var dy = 0; dy < shape[dx].length; dy++) {
@@ -154,8 +156,10 @@ window.addEventListener("load", function () {
         gridSize: [20, 10],
         // Time interval between block drop in frames
         dropSpeed: 30,
-        // How long can a block stay active after touching the bottom in frames
+        // How long a block can stay active after touching the bottom in frames
         hardDropLife: 30,
+        // How long the prompt text (e.g. tetris) can stay active
+        promptTextLife: 45,
     };
     var canvas = document.getElementById("game-window");
     var ctx = canvas.getContext("2d");
@@ -215,9 +219,36 @@ window.addEventListener("load", function () {
             }
         }
     }
-    var score = 0;
-    function clearBoard(board) {
-        var cnt = 0;
+    var totalScore = 0;
+    var promptTimer = 0;
+    var renCount = 0;
+    /**
+     * Checks on all special clears. Invalidates the block argument.
+     * @param block Active block
+     * @param board Game board
+     */
+    function dropAndClear(block, board) {
+        block.hardDrop(board);
+        usedHold = false;
+        var isTSpin = false;
+        // T-spin check
+        if (block.name === "t") {
+            if (block.rotation === "2") {
+                // T2
+                // assumes valid position because of _CanBeAt
+                isTSpin = (board[block.x + 1][block.y] !== null ||
+                    board[block.x + 1][block.y + 2] !== null);
+            }
+            else if (block.rotation === "1") {
+                // T3
+                isTSpin = (board[block.x + 1][block.y + 2] !== null);
+            }
+            else if (block.rotation === "3") {
+                isTSpin = (board[block.x + 1][block.y] !== null);
+            }
+        }
+        // Clear board
+        var clearedRows = 0;
         for (var x = 0; x < rowNum; x++) {
             var full = true;
             for (var y = 0; y < colNum; y++) {
@@ -233,24 +264,52 @@ window.addEventListener("load", function () {
                 }
                 board.splice(x, 1);
                 board.unshift(emptyRow);
-                cnt++;
+                clearedRows++;
             }
         }
-        if (cnt > 0) {
-            score += {
+        if (clearedRows > 0) {
+            var promptText = "";
+            // Normal Clear
+            var score = {
                 1: 100,
                 2: 200,
                 3: 500,
                 4: 1000,
-            }[cnt];
-            document.getElementById("score-text").textContent = score.toString();
+            }[clearedRows];
+            renCount++;
+            if (renCount > 1) {
+                promptText = "Ren " + renCount + "!";
+            }
+            if (clearedRows === 4) {
+                promptText = "Tetris!";
+            }
+            // T-spin
+            if (isTSpin) {
+                if (clearedRows === 2) {
+                    promptText = "T-spin Double!";
+                }
+                else if (clearedRows === 3) {
+                    promptText = "T-spin Triple!";
+                }
+                else {
+                    promptText = "T-spin!";
+                }
+            }
+            totalScore += score;
+            scoreTextElem.textContent = totalScore.toString();
+            if (promptText.length > 0) {
+                promptTextElem.textContent = promptText;
+                promptTimer = frames;
+            }
         }
-        return cnt;
+        else {
+            renCount = 0;
+        }
+        return clearedRows;
     }
     var gamePaused = false;
     function toggleGamePaused() {
         gamePaused = !gamePaused;
-        console.log("paused: " + gamePaused);
     }
     var events = new Queue();
     document.addEventListener("keydown", function (event) {
@@ -323,6 +382,8 @@ window.addEventListener("load", function () {
     var holdBlock = null;
     var usedHold = false;
     var activeBlock = new ActiveBlock(getNextBlock(), board);
+    var promptTextElem = document.getElementById("prompt-text");
+    var scoreTextElem = document.getElementById("score-text");
     // main
     setInterval(function () {
         if (gamePaused) {
@@ -364,9 +425,8 @@ window.addEventListener("load", function () {
                     activeBlock.rotate("right");
                     break;
                 case GameEvent.hardDrop:
-                    activeBlock.hardDrop(board);
+                    dropAndClear(activeBlock, board);
                     activeBlock = new ActiveBlock(getNextBlock(), board);
-                    usedHold = false;
                     break;
                 default:
                     break;
@@ -382,8 +442,7 @@ window.addEventListener("load", function () {
             // at bottom
             if (hardDropTimer && frames - hardDropTimer >= gameSettings.hardDropLife) {
                 // should hard drop
-                activeBlock.hardDrop(board);
-                usedHold = false;
+                dropAndClear(activeBlock, board);
                 activeBlock = new ActiveBlock(getNextBlock(), board);
                 hardDropTimer = null;
             }
@@ -395,7 +454,9 @@ window.addEventListener("load", function () {
             // never hard drop unless the block is at the bottom
             hardDropTimer = null;
         }
-        clearBoard(board);
+        if (frames - promptTimer >= gameSettings.promptTextLife) {
+            promptTextElem.textContent = "";
+        }
         drawBoard(board);
         // don't let shadow block itself
         activeBlock.drawShadow(ctx);
