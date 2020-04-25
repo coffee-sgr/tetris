@@ -226,6 +226,93 @@ window.addEventListener("load", function () {
             }
         }
     }
+    var gamePaused = false;
+    function toggleGamePaused() {
+        gamePaused = !gamePaused;
+    }
+    var events = new Queue();
+    document.addEventListener("keydown", function (event) {
+        switch (event.keyCode) {
+            case 16:
+                // lshift
+                events.push(GameEvent.holdBlock);
+                break;
+            case 27:
+                // esc
+                toggleGamePaused();
+                break;
+            case 32:
+                // space bar
+                events.push(GameEvent.hardDrop);
+                break;
+            case 37:
+                // left arrow key
+                events.push(GameEvent.moveLeft);
+                break;
+            case 38:
+                // up arrow key
+                events.push(GameEvent.rotateRight);
+                break;
+            case 39:
+                // right arrow key
+                events.push(GameEvent.moveRight);
+                break;
+            case 40:
+                // down arrow key
+                events.push(GameEvent.drop);
+                break;
+            case 90:
+                // z
+                events.push(GameEvent.rotateLeft);
+                break;
+            case 88:
+                // x
+                events.push(GameEvent.rotateRight);
+                break;
+            default:
+                console.log("pressed: " + event.keyCode);
+                break;
+        }
+    });
+    if (isTouchScreen) {
+        (_b = document.getElementById("touch-left")) === null || _b === void 0 ? void 0 : _b.addEventListener("touchstart", function (_e) { events.push(GameEvent.moveLeft); });
+        (_c = document.getElementById("touch-right")) === null || _c === void 0 ? void 0 : _c.addEventListener("touchstart", function (_e) { events.push(GameEvent.moveRight); });
+        (_d = document.getElementById("touch-rotate-left")) === null || _d === void 0 ? void 0 : _d.addEventListener("touchstart", function (_e) { events.push(GameEvent.rotateLeft); });
+        (_f = document.getElementById("touch-rotate-right")) === null || _f === void 0 ? void 0 : _f.addEventListener("touchstart", function (_e) { events.push(GameEvent.rotateRight); });
+        (_g = document.getElementById("touch-down")) === null || _g === void 0 ? void 0 : _g.addEventListener("touchstart", function (_e) { events.push(GameEvent.drop); });
+        (_h = document.getElementById("touch-hard-drop")) === null || _h === void 0 ? void 0 : _h.addEventListener("touchstart", function (_e) { events.push(GameEvent.hardDrop); });
+        (_j = document.getElementById("touch-hold")) === null || _j === void 0 ? void 0 : _j.addEventListener("touchstart", function (_e) { events.push(GameEvent.holdBlock); });
+    }
+    console.log("Game loaded");
+    // random board for testing
+    // for (let i = 0; i < rowNum; i++) {
+    //     for (let j = 0; j < colNum; j++) {
+    //         let index = Math.floor(Math.random() * 7)
+    //         board[i][j] = blockNames[index]
+    //     }
+    // }
+    var bag = [];
+    var getNextBlock = function () {
+        if (bag.length < 3) {
+            var newBag = blockNames.slice(); // copys the array
+            shuffleArray(newBag);
+            bag = bag.concat(newBag);
+        }
+        var ret = bag.shift();
+        var next1 = bag[0], next2 = bag[1];
+        document.getElementById("next1").src = "assets/" + next1 + "-shape.png";
+        document.getElementById("next2").src = "assets/" + next2 + "-shape.png";
+        return ret;
+    };
+    var frames = 0; // How many frames has passed
+    var dropTimer = 0;
+    var hardDropTimer = null;
+    var holdBlock = null;
+    var usedHold = false;
+    var activeBlock = new ActiveBlock(getNextBlock(), board);
+    var promptTextElem = document.getElementById("prompt-text");
+    var scoreTextElem = document.getElementById("score-text");
+    var lineCounterElem = document.getElementById("line-counter");
     var totalScore = 0;
     var totalLines = 0;
     var promptTimer = 0;
@@ -320,93 +407,6 @@ window.addEventListener("load", function () {
         }
         return clearedLines;
     }
-    var gamePaused = false;
-    function toggleGamePaused() {
-        gamePaused = !gamePaused;
-    }
-    var events = new Queue();
-    document.addEventListener("keydown", function (event) {
-        switch (event.keyCode) {
-            case 16:
-                // lshift
-                events.push(GameEvent.holdBlock);
-                break;
-            case 27:
-                // esc
-                toggleGamePaused();
-                break;
-            case 32:
-                // space bar
-                events.push(GameEvent.hardDrop);
-                break;
-            case 37:
-                // left arrow key
-                events.push(GameEvent.moveLeft);
-                break;
-            case 38:
-                // up arrow key
-                events.push(GameEvent.rotateRight);
-                break;
-            case 39:
-                // right arrow key
-                events.push(GameEvent.moveRight);
-                break;
-            case 40:
-                // down arrow key
-                events.push(GameEvent.drop);
-                break;
-            case 90:
-                // z
-                events.push(GameEvent.rotateLeft);
-                break;
-            case 88:
-                // x
-                events.push(GameEvent.rotateRight);
-                break;
-            default:
-                console.log("pressed: " + event.keyCode);
-                break;
-        }
-    });
-    if (isTouchScreen) {
-        (_b = document.getElementById("touch-left")) === null || _b === void 0 ? void 0 : _b.addEventListener("touchstart", function (_e) { events.push(GameEvent.moveLeft); });
-        (_c = document.getElementById("touch-right")) === null || _c === void 0 ? void 0 : _c.addEventListener("touchstart", function (_e) { events.push(GameEvent.moveRight); });
-        (_d = document.getElementById("touch-rotate-left")) === null || _d === void 0 ? void 0 : _d.addEventListener("touchstart", function (_e) { events.push(GameEvent.rotateLeft); });
-        (_f = document.getElementById("touch-rotate-right")) === null || _f === void 0 ? void 0 : _f.addEventListener("touchstart", function (_e) { events.push(GameEvent.rotateRight); });
-        (_g = document.getElementById("touch-down")) === null || _g === void 0 ? void 0 : _g.addEventListener("touchstart", function (_e) { events.push(GameEvent.drop); });
-        (_h = document.getElementById("touch-hard-drop")) === null || _h === void 0 ? void 0 : _h.addEventListener("touchstart", function (_e) { events.push(GameEvent.hardDrop); });
-        (_j = document.getElementById("touch-hold")) === null || _j === void 0 ? void 0 : _j.addEventListener("touchstart", function (_e) { events.push(GameEvent.holdBlock); });
-    }
-    console.log("Game loaded");
-    // random board for testing
-    // for (let i = 0; i < rowNum; i++) {
-    //     for (let j = 0; j < colNum; j++) {
-    //         let index = Math.floor(Math.random() * 7)
-    //         board[i][j] = blockNames[index]
-    //     }
-    // }
-    var bag = [];
-    var getNextBlock = function () {
-        if (bag.length < 3) {
-            var newBag = blockNames.slice(); // copys the array
-            shuffleArray(newBag);
-            bag = bag.concat(newBag);
-        }
-        var ret = bag.shift();
-        var next1 = bag[0], next2 = bag[1];
-        document.getElementById("next1").src = "assets/" + next1 + "-shape.png";
-        document.getElementById("next2").src = "assets/" + next2 + "-shape.png";
-        return ret;
-    };
-    var frames = 0; // How many frames has passed
-    var dropTimer = 0;
-    var hardDropTimer = null;
-    var holdBlock = null;
-    var usedHold = false;
-    var activeBlock = new ActiveBlock(getNextBlock(), board);
-    var promptTextElem = document.getElementById("prompt-text");
-    var scoreTextElem = document.getElementById("score-text");
-    var lineCounterElem = document.getElementById("line-counter");
     // main
     setInterval(function () {
         if (gamePaused) {

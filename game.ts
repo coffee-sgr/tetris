@@ -242,97 +242,7 @@ window.addEventListener("load", function () {
             }
         }
     }
-    let totalScore = 0
-    let totalLines = 0
-    let promptTimer = 0
-    let renCount = 0
 
-    /**
-     * Checks on all special clears. Invalidates the block argument.
-     * @param block Active block
-     * @param board Game board
-     */
-    function dropAndClear(block: ActiveBlock, board: GameBoard): number {
-        block.hardDrop(board)
-        usedHold = false
-
-        let isTSpin = false
-        // T-spin check
-        if (block.name === "t") {
-            if (block.rotation === "2") {
-                // T2
-                // assumes valid position because of _CanBeAt
-                isTSpin = (board[block.x + 1][block.y] !== null ||
-                    board[block.x + 1][block.y + 2] !== null)
-            } else if (block.rotation === "1") {
-                // T3
-                isTSpin = (board[block.x + 1][block.y + 2] !== null)
-            } else if (block.rotation === "3") {
-                isTSpin = (board[block.x + 1][block.y] !== null)
-            }
-        }
-        // Clear board
-        let clearedLines = 0
-        for (let x = 0; x < rowNum; x++) {
-            let full = true
-            for (let y = 0; y < colNum; y++) {
-                if (board[x][y] === null) {
-                    full = false
-                    break
-                }
-            }
-            if (full) {
-                let emptyRow: (BlockName | null)[] = []
-                for (let i = 0; i < 10; i++) {
-                    emptyRow.push(null)
-                }
-                board.splice(x, 1)
-                board.unshift(emptyRow)
-                clearedLines++
-            }
-        }
-        if (clearedLines > 0) {
-            let promptText = ""
-            // Normal Clear
-            let score: number = ({
-                1: 100,
-                2: 200,
-                3: 500,
-                4: 1000,
-            } as any)[clearedLines]
-            renCount++
-            if (renCount > 1) {
-                promptText = `Ren ${renCount}!`
-                score += renCount * 100
-            }
-            if (clearedLines === 4) {
-                promptText = "Tetris!"
-            }
-            // T-spin
-            if (isTSpin) {
-                if (clearedLines === 2) {
-                    promptText = "T-spin Double!"
-                    score = 1000
-                } else if (clearedLines === 3) {
-                    promptText = "T-spin Triple!"
-                    score = 1500
-                } else {
-                    promptText = "T-spin!"
-                }
-            }
-            totalScore += score
-            totalLines += clearedLines
-            scoreTextElem.textContent = totalScore.toString()
-            lineCounterElem.textContent = totalLines.toString()
-            if (promptText.length > 0) {
-                promptTextElem.textContent = promptText
-                promptTimer = frames
-            }
-        } else {
-            renCount = 0
-        }
-        return clearedLines
-    }
 
     let gamePaused = false
     function toggleGamePaused() {
@@ -424,6 +334,96 @@ window.addEventListener("load", function () {
     let promptTextElem = document.getElementById("prompt-text") as HTMLElement
     let scoreTextElem = document.getElementById("score-text") as HTMLElement
     let lineCounterElem = document.getElementById("line-counter") as HTMLElement
+    let totalScore = 0
+    let totalLines = 0
+    let promptTimer = 0
+    let renCount = 0
+    /**
+     * Checks on all special clears. Invalidates the block argument.
+     * @param block Active block
+     * @param board Game board
+     */
+    function dropAndClear(block: ActiveBlock, board: GameBoard): number {
+        block.hardDrop(board)
+        usedHold = false
+
+        let isTSpin = false
+        // T-spin check
+        if (block.name === "t") {
+            if (block.rotation === "2") {
+                // T2
+                // assumes valid position because of _CanBeAt
+                isTSpin = (board[block.x + 1][block.y] !== null ||
+                    board[block.x + 1][block.y + 2] !== null)
+            } else if (block.rotation === "1") {
+                // T3
+                isTSpin = (board[block.x + 1][block.y + 2] !== null)
+            } else if (block.rotation === "3") {
+                isTSpin = (board[block.x + 1][block.y] !== null)
+            }
+        }
+        // Clear board
+        let clearedLines = 0
+        for (let x = 0; x < rowNum; x++) {
+            let full = true
+            for (let y = 0; y < colNum; y++) {
+                if (board[x][y] === null) {
+                    full = false
+                    break
+                }
+            }
+            if (full) {
+                let emptyRow: (BlockName | null)[] = []
+                for (let i = 0; i < 10; i++) {
+                    emptyRow.push(null)
+                }
+                board.splice(x, 1)
+                board.unshift(emptyRow)
+                clearedLines++
+            }
+        }
+        if (clearedLines > 0) {
+            let promptText = ""
+            // Normal Clear
+            let score: number = ({
+                1: 100,
+                2: 200,
+                3: 500,
+                4: 1000,
+            } as any)[clearedLines]
+            renCount++
+            if (renCount > 1) {
+                promptText = `Ren ${renCount}!`
+                score += renCount * 100
+            }
+            if (clearedLines === 4) {
+                promptText = "Tetris!"
+            }
+            // T-spin
+            if (isTSpin) {
+                if (clearedLines === 2) {
+                    promptText = "T-spin Double!"
+                    score = 1000
+                } else if (clearedLines === 3) {
+                    promptText = "T-spin Triple!"
+                    score = 1500
+                } else {
+                    promptText = "T-spin!"
+                }
+            }
+            totalScore += score
+            totalLines += clearedLines
+            scoreTextElem.textContent = totalScore.toString()
+            lineCounterElem.textContent = totalLines.toString()
+            if (promptText.length > 0) {
+                promptTextElem.textContent = promptText
+                promptTimer = frames
+            }
+        } else {
+            renCount = 0
+        }
+        return clearedLines
+    }
     // main
     setInterval(() => {
         if (gamePaused) { return }
