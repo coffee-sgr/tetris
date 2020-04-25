@@ -279,6 +279,7 @@ window.addEventListener("load", function () {
             renCount++;
             if (renCount > 1) {
                 promptText = "Ren " + renCount + "!";
+                score += renCount * 100;
             }
             if (clearedRows === 4) {
                 promptText = "Tetris!";
@@ -287,9 +288,11 @@ window.addEventListener("load", function () {
             if (isTSpin) {
                 if (clearedRows === 2) {
                     promptText = "T-spin Double!";
+                    score = 1000;
                 }
                 else if (clearedRows === 3) {
                     promptText = "T-spin Triple!";
+                    score = 1500;
                 }
                 else {
                     promptText = "T-spin!";
