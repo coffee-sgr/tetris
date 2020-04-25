@@ -43,7 +43,7 @@ window.addEventListener("load", function () {
             this.name = block;
             this.board = board;
         }
-        ActiveBlock.prototype._canBeAt = function (rotation, toX, toY) {
+        ActiveBlock.prototype.legalPosition = function (rotation, toX, toY) {
             var shape = blockShapes[this.name][rotation];
             for (var dx = 0; dx < shape.length; dx++) {
                 for (var dy = 0; dy < shape[dx].length; dy++) {
@@ -57,7 +57,7 @@ window.addEventListener("load", function () {
             return true;
         };
         ActiveBlock.prototype.canMoveTo = function (toX, toY) {
-            return this._canBeAt(this.rotation, toX, toY);
+            return this.legalPosition(this.rotation, toX, toY);
         };
         ActiveBlock.prototype.rotate = function (dir) {
             var target;
@@ -71,7 +71,7 @@ window.addEventListener("load", function () {
             for (var _i = 0, _a = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]]; _i < _a.length; _i++) {
                 var delta = _a[_i];
                 var dx = delta[0], dy = delta[1];
-                if (this._canBeAt(target, this.x + dx, this.y + dy)) {
+                if (this.legalPosition(target, this.x + dx, this.y + dy)) {
                     this.rotation = target;
                     this.x = this.x + dx;
                     this.y = this.y + dy;
@@ -227,9 +227,9 @@ window.addEventListener("load", function () {
         }
     }
     var gamePaused = false;
-    function toggleGamePaused() {
+    var toggleGamePaused = function () {
         gamePaused = !gamePaused;
-    }
+    };
     var events = new Queue();
     document.addEventListener("keydown", function (event) {
         switch (event.keyCode) {
@@ -479,6 +479,13 @@ window.addEventListener("load", function () {
         }
         if (frames - promptTimer >= gameSettings.promptTextLife) {
             promptTextElem.textContent = "";
+        }
+        if (!activeBlock.legalPosition(activeBlock.rotation, activeBlock.x, activeBlock.y)) {
+            // Game Over
+            promptTextElem.textContent = "GAME OVER";
+            promptTextElem.style.color = "red";
+            gamePaused = true;
+            toggleGamePaused = function () { };
         }
         drawBoard(board);
         // don't let shadow block itself

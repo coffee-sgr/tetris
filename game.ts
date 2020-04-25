@@ -58,7 +58,7 @@ window.addEventListener("load", function () {
             this.name = block
             this.board = board
         }
-        _canBeAt(rotation: Rotation, toX: number, toY: number): boolean {
+        legalPosition(rotation: Rotation, toX: number, toY: number): boolean {
             let shape = blockShapes[this.name][rotation]
             for (let dx = 0; dx < shape.length; dx++) {
                 for (let dy = 0; dy < shape[dx].length; dy++) {
@@ -72,7 +72,7 @@ window.addEventListener("load", function () {
             return true
         }
         canMoveTo(toX: number, toY: number): boolean {
-            return this._canBeAt(this.rotation, toX, toY)
+            return this.legalPosition(this.rotation, toX, toY)
         }
         rotate(dir: "left" | "right"): boolean {
             let target: Rotation
@@ -84,7 +84,7 @@ window.addEventListener("load", function () {
             }
             for (let delta of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]]) {
                 let [dx, dy] = delta
-                if (this._canBeAt(target, this.x + dx, this.y + dy)) {
+                if (this.legalPosition(target, this.x + dx, this.y + dy)) {
                     this.rotation = target
                     this.x = this.x + dx
                     this.y = this.y + dy
@@ -245,7 +245,7 @@ window.addEventListener("load", function () {
 
 
     let gamePaused = false
-    function toggleGamePaused() {
+    let toggleGamePaused = function () {
         gamePaused = !gamePaused
     }
     let events = new Queue<GameEvent>()
@@ -491,6 +491,13 @@ window.addEventListener("load", function () {
         }
         if (frames - promptTimer >= gameSettings.promptTextLife) {
             promptTextElem.textContent = ""
+        }
+        if (!activeBlock.legalPosition(activeBlock.rotation, activeBlock.x, activeBlock.y)) {
+            // Game Over
+            promptTextElem.textContent = "GAME OVER"
+            promptTextElem.style.color = "red"
+            gamePaused = true
+            toggleGamePaused = () => {}
         }
         drawBoard(board)
 
