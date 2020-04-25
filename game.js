@@ -39,7 +39,7 @@ window.addEventListener("load", function () {
         function ActiveBlock(block, board) {
             this.rotation = "0";
             this.x = 0;
-            this.y = 4;
+            this.y = 3;
             this.name = block;
             this.board = board;
         }

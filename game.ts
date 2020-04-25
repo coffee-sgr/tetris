@@ -52,7 +52,7 @@ window.addEventListener("load", function () {
         rotation: Rotation = "0"
         board: GameBoard
         x: number = 0
-        y: number = 4
+        y: number = 3
 
         constructor(block: BlockName, board: GameBoard) {
             this.name = block
