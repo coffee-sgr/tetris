@@ -27,6 +27,12 @@ function shuffleArray(arr: Array<any>) {
  * Main Function
  */
 window.addEventListener("load", function () {
+    let isTouchScreen = true
+    // Hides touch control if doesn't support touch screen
+    if (window.navigator.maxTouchPoints === 0) {
+        isTouchScreen = false
+        document.getElementsByClassName("touch-control-zone").item(0)?.setAttribute("hidden", "hidden")
+    }
     const blockNames: BlockName[] = ["i", "j", "l", "o", "s", "t", "z"]
 
     class Queue<T> {
@@ -373,6 +379,15 @@ window.addEventListener("load", function () {
                 break
         }
     })
+    if (isTouchScreen) {
+        document.getElementById("touch-left")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.moveLeft)})
+        document.getElementById("touch-right")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.moveRight)})
+        document.getElementById("touch-rotate-left")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.rotateLeft)})
+        document.getElementById("touch-rotate-right")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.rotateRight)})
+        document.getElementById("touch-down")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.drop)})
+        document.getElementById("touch-hard-drop")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.hardDrop)})
+        document.getElementById("touch-hold")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.holdBlock)})
+    }
     console.log("Game loaded")
 
     // random board for testing

@@ -12,6 +12,13 @@ function shuffleArray(arr) {
  * Main Function
  */
 window.addEventListener("load", function () {
+    var _a, _b, _c, _d, _f, _g, _h, _j;
+    var isTouchScreen = true;
+    // Hides touch control if doesn't support touch screen
+    if (window.navigator.maxTouchPoints === 0) {
+        isTouchScreen = false;
+        (_a = document.getElementsByClassName("touch-control-zone").item(0)) === null || _a === void 0 ? void 0 : _a.setAttribute("hidden", "hidden");
+    }
     var blockNames = ["i", "j", "l", "o", "s", "t", "z"];
     var Queue = /** @class */ (function () {
         function Queue() {
@@ -163,7 +170,7 @@ window.addEventListener("load", function () {
     };
     var canvas = document.getElementById("game-window");
     var ctx = canvas.getContext("2d");
-    var _a = gameSettings.gridSize, rowNum = _a[0], colNum = _a[1];
+    var _k = gameSettings.gridSize, rowNum = _k[0], colNum = _k[1];
     var gridSize = [canvas.width / colNum, canvas.height / rowNum];
     // set the size of block images
     blockNames.forEach(function (element) {
@@ -358,6 +365,15 @@ window.addEventListener("load", function () {
                 break;
         }
     });
+    if (isTouchScreen) {
+        (_b = document.getElementById("touch-left")) === null || _b === void 0 ? void 0 : _b.addEventListener("touchstart", function (_e) { events.push(GameEvent.moveLeft); });
+        (_c = document.getElementById("touch-right")) === null || _c === void 0 ? void 0 : _c.addEventListener("touchstart", function (_e) { events.push(GameEvent.moveRight); });
+        (_d = document.getElementById("touch-rotate-left")) === null || _d === void 0 ? void 0 : _d.addEventListener("touchstart", function (_e) { events.push(GameEvent.rotateLeft); });
+        (_f = document.getElementById("touch-rotate-right")) === null || _f === void 0 ? void 0 : _f.addEventListener("touchstart", function (_e) { events.push(GameEvent.rotateRight); });
+        (_g = document.getElementById("touch-down")) === null || _g === void 0 ? void 0 : _g.addEventListener("touchstart", function (_e) { events.push(GameEvent.drop); });
+        (_h = document.getElementById("touch-hard-drop")) === null || _h === void 0 ? void 0 : _h.addEventListener("touchstart", function (_e) { events.push(GameEvent.hardDrop); });
+        (_j = document.getElementById("touch-hold")) === null || _j === void 0 ? void 0 : _j.addEventListener("touchstart", function (_e) { events.push(GameEvent.holdBlock); });
+    }
     console.log("Game loaded");
     // random board for testing
     // for (let i = 0; i < rowNum; i++) {
