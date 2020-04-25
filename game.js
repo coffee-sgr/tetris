@@ -482,7 +482,7 @@ window.addEventListener("load", function () {
         }
         if (!activeBlock.legalPosition(activeBlock.rotation, activeBlock.x, activeBlock.y)) {
             // Game Over
-            promptTextElem.textContent = "GAME OVER";
+            promptTextElem.innerHTML = "GAME OVER<br>Reload to play again ";
             promptTextElem.style.color = "red";
             gamePaused = true;
             toggleGamePaused = function () { };

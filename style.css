@@ -28,6 +28,7 @@ html {
     color: bisque;
     font-size: 20pt;
     text-shadow: 0 0 5pt black;
+    text-align: center;
 }
 
 .touch-control-zone {
