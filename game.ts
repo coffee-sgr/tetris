@@ -82,7 +82,7 @@ window.addEventListener("load", function () {
             } else {
                 target = ((parseInt(this.rotation) + 1) % 4).toString() as Rotation
             }
-            for (let delta of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]]) {
+            for (let delta of [[0, 0], [1, 0], [1, 1], [1, -1], [2, 0], [2, 1], [2, -1], [0, 1], [0, -1], [-1, 0], [-1, 1], [-1, -1]]) {
                 let [dx, dy] = delta
                 if (this.legalPosition(target, this.x + dx, this.y + dy)) {
                     this.rotation = target
@@ -293,13 +293,13 @@ window.addEventListener("load", function () {
         }
     })
     if (isTouchScreen) {
-        document.getElementById("touch-left")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.moveLeft)})
-        document.getElementById("touch-right")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.moveRight)})
-        document.getElementById("touch-rotate-left")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.rotateLeft)})
-        document.getElementById("touch-rotate-right")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.rotateRight)})
-        document.getElementById("touch-down")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.drop)})
-        document.getElementById("touch-hard-drop")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.hardDrop)})
-        document.getElementById("touch-hold")?.addEventListener("touchstart", (_e) => {events.push(GameEvent.holdBlock)})
+        document.getElementById("touch-left")?.addEventListener("touchstart", (_e) => { events.push(GameEvent.moveLeft) })
+        document.getElementById("touch-right")?.addEventListener("touchstart", (_e) => { events.push(GameEvent.moveRight) })
+        document.getElementById("touch-rotate-left")?.addEventListener("touchstart", (_e) => { events.push(GameEvent.rotateLeft) })
+        document.getElementById("touch-rotate-right")?.addEventListener("touchstart", (_e) => { events.push(GameEvent.rotateRight) })
+        document.getElementById("touch-down")?.addEventListener("touchstart", (_e) => { events.push(GameEvent.drop) })
+        document.getElementById("touch-hard-drop")?.addEventListener("touchstart", (_e) => { events.push(GameEvent.hardDrop) })
+        document.getElementById("touch-hold")?.addEventListener("touchstart", (_e) => { events.push(GameEvent.holdBlock) })
     }
     console.log("Game loaded")
 
@@ -497,7 +497,7 @@ window.addEventListener("load", function () {
             promptTextElem.innerHTML = "GAME OVER<br>Reload to play again "
             promptTextElem.style.color = "red"
             gamePaused = true
-            toggleGamePaused = () => {}
+            toggleGamePaused = () => { }
         }
         drawBoard(board)
 
