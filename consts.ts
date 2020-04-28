@@ -1,17 +1,13 @@
 // Compile using TypeScript 3.8.3
 
-
 type BlockName = "i" | "j" | "l" | "o" | "s" | "t" | "z"
-// enum BlockName {
-//     i, j, l, o, s, t, z
-// }
 type Shape = string[]
 type Rotation = "0" | "1" | "2" | "3"
 type BlockShapes = {
     [key in Rotation]: Shape
 }
 type BlockMap = { [key in BlockName]: BlockShapes }
-;
+
 const blockNames: BlockName[] = ["i", "j", "l", "o", "s", "t", "z"]
 const blockShapes: BlockMap = {
     "i": {
