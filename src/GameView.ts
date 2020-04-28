@@ -20,6 +20,10 @@ class GameView {
     promptTimer = 0
     renCount = 0
 
+    static getImage(blockName: BlockName) {
+        return document.getElementById(blockName + "-block") as HTMLImageElement
+    }
+
     constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
         this.canvas = canvas
         this.ctx = ctx
@@ -38,10 +42,6 @@ class GameView {
         }
     }
 
-    static getImage(blockName: BlockName) {
-        return document.getElementById(blockName + "-block") as HTMLImageElement
-    }
-
     grid(x: number, y: number): [number, number, number, number] {
         return [
             this.canvas.width / GameSettings.colNum * y,
@@ -55,10 +55,10 @@ class GameView {
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
     }
 
-    drawBoard(board: GameBoard) {
+    drawBoard() {
         for (let i = 0; i < GameSettings.rowNum; i++) {
             for (let j = 0; j < GameSettings.colNum; j++) {
-                let block = board[i][j]
+                let block = this.board[i][j]
                 if (block) {
                     let [xpos, ypos] = this.grid(i, j)
                     this.ctx.drawImage(GameView.getImage(block), xpos, ypos)
@@ -71,11 +71,12 @@ class GameView {
     }
     /**
      * Checks on all special clears. Invalidates the block argument.
-     * @param block Active block
-     * @param board Game board
      */
-    dropAndClear(block: Block, board: GameBoard): number {
-        block.hardDrop(board)
+    dropAndClear(): number {
+        const block = this.activeBlock
+        const board = this.board
+
+        block.hardDrop()
         this.usedHold = false
 
         let isTSpin = false
@@ -190,7 +191,7 @@ class GameView {
                 this.activeBlock.rotate("right")
                 break
             case GameEvent.hardDrop:
-                this.dropAndClear(this.activeBlock, this.board)
+                this.dropAndClear()
                 this.activeBlock = this.createBlock()
                 break
             default:
@@ -217,7 +218,7 @@ class GameView {
                 // at bottom
                 if (this.hardDropTimer && this.frames - this.hardDropTimer >= GameSettings.hardDropLife) {
                     // should hard drop
-                    this.dropAndClear(this.activeBlock, this.board)
+                    this.dropAndClear()
                     this.activeBlock = this.createBlock()
                     this.hardDropTimer = null
                 } else if (this.hardDropTimer === null) {
@@ -237,11 +238,11 @@ class GameView {
                 this.gamePaused = true
                 this.toggleGamePaused = () => { }
             }
-            this.drawBoard(this.board)
+            this.drawBoard()
 
             // don't let shadow block itself
-            this.activeBlock.drawShadow(this.ctx)
-            this.activeBlock.draw(this.ctx)
+            this.activeBlock.drawShadow()
+            this.activeBlock.draw()
         }, 1000 / GameSettings.fps)
     }
 }

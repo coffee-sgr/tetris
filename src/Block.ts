@@ -69,7 +69,8 @@ class Block {
         }
         return false
     }
-    draw(ctx: CanvasRenderingContext2D) {
+    draw() {
+        const ctx = this.parent.ctx
         let shape = blockShapes[this.name][this.rotation]
         for (let dx = 0; dx < shape.length; dx++) {
             for (let dy = 0; dy < shape[dx].length; dy++) {
@@ -93,7 +94,8 @@ class Block {
         }
         return ret
     }
-    drawShadow(ctx: CanvasRenderingContext2D) {
+    drawShadow() {
+        const ctx = this.parent.ctx
         ctx.globalAlpha = 0.4
         let shape = blockShapes[this.name][this.rotation]
         let [x, y] = this.shadowPosition()
@@ -110,9 +112,9 @@ class Block {
     }
     /**
      * Invalidates the object
-     * @param board The game board
      */
-    hardDrop(board: GameBoard) {
+    hardDrop() {
+        const board = this.parent.board
         let [x, y] = this.shadowPosition()
         this.x = x
         this.y = y

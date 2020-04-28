@@ -68,7 +68,8 @@ var Block = /** @class */ (function () {
         }
         return false;
     };
-    Block.prototype.draw = function (ctx) {
+    Block.prototype.draw = function () {
+        var ctx = this.parent.ctx;
         var shape = blockShapes[this.name][this.rotation];
         for (var dx = 0; dx < shape.length; dx++) {
             for (var dy = 0; dy < shape[dx].length; dy++) {
@@ -92,7 +93,8 @@ var Block = /** @class */ (function () {
         }
         return ret;
     };
-    Block.prototype.drawShadow = function (ctx) {
+    Block.prototype.drawShadow = function () {
+        var ctx = this.parent.ctx;
         ctx.globalAlpha = 0.4;
         var shape = blockShapes[this.name][this.rotation];
         var _a = this.shadowPosition(), x = _a[0], y = _a[1];
@@ -109,9 +111,9 @@ var Block = /** @class */ (function () {
     };
     /**
      * Invalidates the object
-     * @param board The game board
      */
-    Block.prototype.hardDrop = function (board) {
+    Block.prototype.hardDrop = function () {
+        var board = this.parent.board;
         var _a = this.shadowPosition(), x = _a[0], y = _a[1];
         this.x = x;
         this.y = y;
@@ -398,10 +400,10 @@ var GameView = /** @class */ (function () {
         this.ctx.fillStyle = "#000000";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     };
-    GameView.prototype.drawBoard = function (board) {
+    GameView.prototype.drawBoard = function () {
         for (var i = 0; i < GameSettings.rowNum; i++) {
             for (var j = 0; j < GameSettings.colNum; j++) {
-                var block = board[i][j];
+                var block = this.board[i][j];
                 if (block) {
                     var _a = this.grid(i, j), xpos = _a[0], ypos = _a[1];
                     this.ctx.drawImage(GameView.getImage(block), xpos, ypos);
@@ -414,11 +416,11 @@ var GameView = /** @class */ (function () {
     };
     /**
      * Checks on all special clears. Invalidates the block argument.
-     * @param block Active block
-     * @param board Game board
      */
-    GameView.prototype.dropAndClear = function (block, board) {
-        block.hardDrop(board);
+    GameView.prototype.dropAndClear = function () {
+        var block = this.activeBlock;
+        var board = this.board;
+        block.hardDrop();
         this.usedHold = false;
         var isTSpin = false;
         // T-spin check
@@ -538,7 +540,7 @@ var GameView = /** @class */ (function () {
                 this.activeBlock.rotate("right");
                 break;
             case GameEvent.hardDrop:
-                this.dropAndClear(this.activeBlock, this.board);
+                this.dropAndClear();
                 this.activeBlock = this.createBlock();
                 break;
             default:
@@ -570,7 +572,7 @@ var GameView = /** @class */ (function () {
                 // at bottom
                 if (_this.hardDropTimer && _this.frames - _this.hardDropTimer >= GameSettings.hardDropLife) {
                     // should hard drop
-                    _this.dropAndClear(_this.activeBlock, _this.board);
+                    _this.dropAndClear();
                     _this.activeBlock = _this.createBlock();
                     _this.hardDropTimer = null;
                 }
@@ -592,10 +594,10 @@ var GameView = /** @class */ (function () {
                 _this.gamePaused = true;
                 _this.toggleGamePaused = function () { };
             }
-            _this.drawBoard(_this.board);
+            _this.drawBoard();
             // don't let shadow block itself
-            _this.activeBlock.drawShadow(_this.ctx);
-            _this.activeBlock.draw(_this.ctx);
+            _this.activeBlock.drawShadow();
+            _this.activeBlock.draw();
         }, 1000 / GameSettings.fps);
     };
     return GameView;
