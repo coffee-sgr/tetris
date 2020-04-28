@@ -7,6 +7,8 @@ type BlockShapes = {
     [key in Rotation]: Shape
 }
 type BlockMap = { [key in BlockName]: BlockShapes }
+type GameBoard = ((BlockName | null)[][])
+
 
 const blockNames: BlockName[] = ["i", "j", "l", "o", "s", "t", "z"]
 const blockShapes: BlockMap = {

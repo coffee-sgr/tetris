@@ -1,6 +1,3 @@
-type GameBoard = ((BlockName | null)[][])
-
-
 class GameView {
     canvas: HTMLCanvasElement
     ctx: CanvasRenderingContext2D
