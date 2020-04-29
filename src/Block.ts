@@ -1,11 +1,18 @@
+interface GameBoardDelegate {
+    board: (BlockName | null)[][]
+    ctx: CanvasRenderingContext2D
+    canvas: HTMLCanvasElement
+    grid(x: number, y: number): [number, number, number, number]
+}
+
 class Block {
-    parent: GameView
+    parent: GameBoardDelegate
     name: BlockName
     rotation: Rotation = "0"
     x: number = 0
     y: number = 3
 
-    constructor(parent: GameView, block: BlockName) {
+    constructor(parent: GameBoardDelegate, block: BlockName) {
         this.parent = parent
         this.name = block
     }

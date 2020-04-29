@@ -1,4 +1,4 @@
-class GameView {
+class GameView implements GameBoardDelegate {
     canvas: HTMLCanvasElement
     ctx: CanvasRenderingContext2D
     activeBlock!: Block
