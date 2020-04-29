@@ -23,7 +23,6 @@ class GameView implements GameBoardDelegate {
     static getImage(blockName: BlockName) {
         return document.getElementById(blockName + "-block") as HTMLImageElement
     }
-
     constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
         this.canvas = canvas
         this.ctx = ctx
@@ -41,7 +40,18 @@ class GameView implements GameBoardDelegate {
             }
         }
     }
-
+    /**
+        * Note that ctx defines width as x axis while the game uses height.
+        * ```
+        * --→ y
+        * |
+        * ↓
+        * x
+        * ```
+        * @param x X Position (starting from 0)
+        * @param y Y Position (starting from 0)
+        * @returns `[x1, y1, x2, y2]` Upper-left corner `(x1, y1)` and Lower-right corner `(x2, y2)` for ctx (width as x axis)
+    */
     grid(x: number, y: number): [number, number, number, number] {
         return [
             this.canvas.width / GameSettings.colNum * y,

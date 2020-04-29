@@ -7,27 +7,12 @@ var Block = /** @class */ (function () {
         this.parent = parent;
         this.name = block;
     }
-    /**
-    * Note that ctx defines width as x axis while the game uses height.
-    * ```
-    * --→ y
-    * |
-    * ↓
-    * x
-    * ```
-    * @param x X Position (starting from 0)
-    * @param y Y Position (starting from 0)
-    * @returns `[x1, y1, x2, y2]` Upper-left corner `(x1, y1)` and Lower-right corner `(x2, y2)` for ctx (width as x axis)
-    */
-    Block.isInBound = function (x, y) {
-        return x >= 0 && x < GameSettings.rowNum && y >= 0 && y < GameSettings.colNum;
-    };
     Block.prototype.legalPosition = function (rotation, toX, toY) {
         var shape = blockShapes[this.name][rotation];
         for (var dx = 0; dx < shape.length; dx++) {
             for (var dy = 0; dy < shape[dx].length; dy++) {
                 var x1 = toX + dx, y1 = toY + dy;
-                if (shape[dx][dy] === "*" && ((!Block.isInBound(x1, y1)) || this.parent.board[x1][y1])) {
+                if (shape[dx][dy] === "*" && ((!GameSettings.isInBound(x1, y1)) || this.parent.board[x1][y1])) {
                     // out of bound or collision
                     return false;
                 }
@@ -345,6 +330,9 @@ var GameEvent;
 var GameSettings = /** @class */ (function () {
     function GameSettings() {
     }
+    GameSettings.isInBound = function (x, y) {
+        return x >= 0 && x < GameSettings.rowNum && y >= 0 && y < GameSettings.colNum;
+    };
     GameSettings.fps = 30;
     // Number of rows and columns
     GameSettings.rowNum = 20;
@@ -388,6 +376,18 @@ var GameView = /** @class */ (function () {
     GameView.getImage = function (blockName) {
         return document.getElementById(blockName + "-block");
     };
+    /**
+        * Note that ctx defines width as x axis while the game uses height.
+        * ```
+        * --→ y
+        * |
+        * ↓
+        * x
+        * ```
+        * @param x X Position (starting from 0)
+        * @param y Y Position (starting from 0)
+        * @returns `[x1, y1, x2, y2]` Upper-left corner `(x1, y1)` and Lower-right corner `(x2, y2)` for ctx (width as x axis)
+    */
     GameView.prototype.grid = function (x, y) {
         return [
             this.canvas.width / GameSettings.colNum * y,

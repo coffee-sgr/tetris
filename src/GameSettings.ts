@@ -9,4 +9,7 @@ class GameSettings {
     static hardDropLife = 30
     // How long the prompt text (e.g. tetris) can stay active
     static promptTextLife = 45
+    static isInBound(x: number, y: number): boolean {
+        return x >= 0 && x < GameSettings.rowNum && y >= 0 && y < GameSettings.colNum
+    }
 }

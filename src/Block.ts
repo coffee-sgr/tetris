@@ -16,28 +16,12 @@ class Block {
         this.parent = parent
         this.name = block
     }
-    /**
-    * Note that ctx defines width as x axis while the game uses height.
-    * ```
-    * --→ y
-    * |
-    * ↓
-    * x
-    * ```
-    * @param x X Position (starting from 0)
-    * @param y Y Position (starting from 0)
-    * @returns `[x1, y1, x2, y2]` Upper-left corner `(x1, y1)` and Lower-right corner `(x2, y2)` for ctx (width as x axis)
-    */
-
-    static isInBound(x: number, y: number): boolean {
-        return x >= 0 && x < GameSettings.rowNum && y >= 0 && y < GameSettings.colNum
-    }
     legalPosition(rotation: Rotation, toX: number, toY: number): boolean {
         let shape = blockShapes[this.name][rotation]
         for (let dx = 0; dx < shape.length; dx++) {
             for (let dy = 0; dy < shape[dx].length; dy++) {
                 let x1 = toX + dx, y1 = toY + dy
-                if (shape[dx][dy] === "*" && ((!Block.isInBound(x1, y1)) || this.parent.board[x1][y1])) {
+                if (shape[dx][dy] === "*" && ((!GameSettings.isInBound(x1, y1)) || this.parent.board[x1][y1])) {
                     // out of bound or collision
                     return false
                 }
