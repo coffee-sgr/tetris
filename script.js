@@ -606,12 +606,14 @@ var GameView = /** @class */ (function () {
  * Main Function
  */
 window.addEventListener("load", function () {
-    var _a, _b, _c, _d, _f, _g, _h, _j;
-    var isTouchScreen = true;
+    var _a, _b, _c, _d, _f, _g, _h;
+    var isTouchScreen = window.navigator.maxTouchPoints > 0;
     // Hides touch control if doesn't support touch screen
-    if (window.navigator.maxTouchPoints === 0) {
-        isTouchScreen = false;
-        (_a = document.getElementsByClassName("touch-control-zone").item(0)) === null || _a === void 0 ? void 0 : _a.setAttribute("hidden", "hidden");
+    if (isTouchScreen) {
+        var elements = document.getElementsByClassName("touch-control-zone");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].removeAttribute("hidden");
+        }
     }
     var canvas = document.getElementById("game-window");
     var ctx = canvas.getContext("2d");
@@ -666,13 +668,13 @@ window.addEventListener("load", function () {
         }
     });
     if (isTouchScreen) {
-        (_b = document.getElementById("touch-left")) === null || _b === void 0 ? void 0 : _b.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.moveLeft); });
-        (_c = document.getElementById("touch-right")) === null || _c === void 0 ? void 0 : _c.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.moveRight); });
-        (_d = document.getElementById("touch-rotate-left")) === null || _d === void 0 ? void 0 : _d.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.rotateLeft); });
-        (_f = document.getElementById("touch-rotate-right")) === null || _f === void 0 ? void 0 : _f.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.rotateRight); });
-        (_g = document.getElementById("touch-down")) === null || _g === void 0 ? void 0 : _g.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.drop); });
-        (_h = document.getElementById("touch-hard-drop")) === null || _h === void 0 ? void 0 : _h.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.hardDrop); });
-        (_j = document.getElementById("touch-hold")) === null || _j === void 0 ? void 0 : _j.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.holdBlock); });
+        (_a = document.getElementById("touch-left")) === null || _a === void 0 ? void 0 : _a.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.moveLeft); });
+        (_b = document.getElementById("touch-right")) === null || _b === void 0 ? void 0 : _b.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.moveRight); });
+        (_c = document.getElementById("touch-rotate-left")) === null || _c === void 0 ? void 0 : _c.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.rotateLeft); });
+        (_d = document.getElementById("touch-rotate-right")) === null || _d === void 0 ? void 0 : _d.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.rotateRight); });
+        (_f = document.getElementById("touch-down")) === null || _f === void 0 ? void 0 : _f.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.drop); });
+        (_g = document.getElementById("touch-hard-drop")) === null || _g === void 0 ? void 0 : _g.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.hardDrop); });
+        (_h = document.getElementById("touch-hold")) === null || _h === void 0 ? void 0 : _h.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.holdBlock); });
     }
     console.log("Game loaded");
     // main

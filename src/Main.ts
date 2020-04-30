@@ -2,11 +2,13 @@
  * Main Function
  */
 window.addEventListener("load", function () {
-    let isTouchScreen = true
+    let isTouchScreen = window.navigator.maxTouchPoints > 0
     // Hides touch control if doesn't support touch screen
-    if (window.navigator.maxTouchPoints === 0) {
-        isTouchScreen = false
-        document.getElementsByClassName("touch-control-zone").item(0)?.setAttribute("hidden", "hidden")
+    if (isTouchScreen) {
+        const elements = document.getElementsByClassName("touch-control-zone")
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].removeAttribute("hidden")
+        }
     }
 
 
