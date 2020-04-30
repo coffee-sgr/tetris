@@ -21,7 +21,7 @@ class GameView implements GameBoardDelegate {
     renCount = 0
 
     static getImage(blockName: BlockName) {
-        return document.getElementById(blockName + "-block") as HTMLImageElement
+        return document.getElementById(`${blockName}-block`) as HTMLImageElement
     }
     constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
         this.canvas = canvas
@@ -182,7 +182,7 @@ class GameView implements GameBoardDelegate {
                         this.activeBlock = this.createBlock()
                     }
                     this.usedHold = true;
-                    (document.getElementById("hold-img") as HTMLImageElement).src = "assets/" + this.holdBlock + "-shape.png"
+                    (document.getElementById("hold-img") as HTMLImageElement).src = `assets/${this.holdBlock}-shape.png`
                 }
                 break
             case GameEvent.moveLeft:
