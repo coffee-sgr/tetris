@@ -3,16 +3,6 @@
  */
 window.addEventListener("load", function () {
     let isTouchScreen = window.navigator.maxTouchPoints > 0
-    // Hides touch control if doesn't support touch screen
-    if (isTouchScreen) {
-        const elements = document.getElementsByClassName("touch-control-zone")
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].removeAttribute("hidden")
-        }
-    }
-
-
-
     const canvas = document.getElementById("game-window") as HTMLCanvasElement
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
     const gameView = new GameView(canvas, ctx)
@@ -66,6 +56,10 @@ window.addEventListener("load", function () {
         }
     })
     if (isTouchScreen) {
+        const elements = document.getElementsByClassName("touch-control-zone")
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].removeAttribute("hidden")
+        }
         document.getElementById("touch-left")?.addEventListener("touchstart", (_e) => { gameView.events.push(GameEvent.moveLeft) })
         document.getElementById("touch-right")?.addEventListener("touchstart", (_e) => { gameView.events.push(GameEvent.moveRight) })
         document.getElementById("touch-rotate-left")?.addEventListener("touchstart", (_e) => { gameView.events.push(GameEvent.rotateLeft) })

@@ -608,13 +608,6 @@ var GameView = /** @class */ (function () {
 window.addEventListener("load", function () {
     var _a, _b, _c, _d, _f, _g, _h;
     var isTouchScreen = window.navigator.maxTouchPoints > 0;
-    // Hides touch control if doesn't support touch screen
-    if (isTouchScreen) {
-        var elements = document.getElementsByClassName("touch-control-zone");
-        for (var i = 0; i < elements.length; i++) {
-            elements[i].removeAttribute("hidden");
-        }
-    }
     var canvas = document.getElementById("game-window");
     var ctx = canvas.getContext("2d");
     var gameView = new GameView(canvas, ctx);
@@ -668,6 +661,10 @@ window.addEventListener("load", function () {
         }
     });
     if (isTouchScreen) {
+        var elements = document.getElementsByClassName("touch-control-zone");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].removeAttribute("hidden");
+        }
         (_a = document.getElementById("touch-left")) === null || _a === void 0 ? void 0 : _a.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.moveLeft); });
         (_b = document.getElementById("touch-right")) === null || _b === void 0 ? void 0 : _b.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.moveRight); });
         (_c = document.getElementById("touch-rotate-left")) === null || _c === void 0 ? void 0 : _c.addEventListener("touchstart", function (_e) { gameView.events.push(GameEvent.rotateLeft); });
