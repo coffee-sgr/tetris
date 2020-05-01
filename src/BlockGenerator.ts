@@ -1,15 +1,18 @@
 class BlockGenerator {
     bag: BlockName[] = []
-    getNextBlock() {
-        if (this.bag.length < 3) {
+    getNextBlock(): BlockName {
+        let elems = document.getElementsByClassName("next-blocks-img") // length should be 6
+        // 1 for next block, others for next view
+        if (this.bag.length < elems.length + 1) {
             let newBag = blockNames.slice() // copys the array
             shuffleArray(newBag)
             this.bag = this.bag.concat(newBag)
         }
         let ret = this.bag.shift() as BlockName
-        let next1 = this.bag[0], next2 = this.bag[1];
-        (document.getElementById("next1") as HTMLImageElement).src = `assets/${next1}-shape.png`;
-        (document.getElementById("next2") as HTMLImageElement).src = `assets/${next2}-shape.png`
+
+        for (let i = 0; i < elems.length; i++) {
+            (elems[i] as HTMLImageElement).src = `assets/${this.bag[i]}-shape.png`
+        }
         return ret
     }
 }

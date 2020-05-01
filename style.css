@@ -64,6 +64,22 @@ html {
     font-size: 25pt;
 }
 
+.next-blocks-container {
+    fill: black;
+    position: absolute;
+    top: 5%;
+    width: 30pt;
+    vertical-align: middle;
+}
+
+.next-blocks-img {
+    border: 10px black;
+    height: 30pt;
+    width: 30pt;
+    padding: 0;
+    vertical-align: middle;
+}
+
 #left-panel {
     text-align: center;
     padding: 0 20px;
@@ -86,11 +102,6 @@ html {
 
 #game-window {
     border: 10px solid gray;
-}
-
-#next-blocks {
-    position: absolute;
-    top: 10%;
 }
 
 #next1 {

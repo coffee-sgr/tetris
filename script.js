@@ -118,15 +118,17 @@ var BlockGenerator = /** @class */ (function () {
         this.bag = [];
     }
     BlockGenerator.prototype.getNextBlock = function () {
-        if (this.bag.length < 3) {
+        var elems = document.getElementsByClassName("next-blocks-img"); // length should be 6
+        // 1 for next block, others for next view
+        if (this.bag.length < elems.length + 1) {
             var newBag = blockNames.slice(); // copys the array
             shuffleArray(newBag);
             this.bag = this.bag.concat(newBag);
         }
         var ret = this.bag.shift();
-        var next1 = this.bag[0], next2 = this.bag[1];
-        document.getElementById("next1").src = "assets/" + next1 + "-shape.png";
-        document.getElementById("next2").src = "assets/" + next2 + "-shape.png";
+        for (var i = 0; i < elems.length; i++) {
+            elems[i].src = "assets/" + this.bag[i] + "-shape.png";
+        }
         return ret;
     };
     return BlockGenerator;
